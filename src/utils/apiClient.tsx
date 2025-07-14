@@ -1,4 +1,4 @@
-import axios, { AxiosInstance } from "axios";
+import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from "axios";
 
 class AxiosClient {
   private axiosInstance: AxiosInstance;
@@ -15,11 +15,20 @@ class AxiosClient {
   }
 
   // 편의 메서드들
-  get = (url: string, config?: any) => this.axiosInstance.get(url, config);
-  post = (url: string, data?: any, config?: any) => this.axiosInstance.post(url, data, config);
-  put = (url: string, data?: any, config?: any) => this.axiosInstance.put(url, data, config);
-  patch = (url: string, data?: any, config?: any) => this.axiosInstance.patch(url, data, config);
-  delete = (url: string, config?: any) => this.axiosInstance.delete(url, config);
+  get = <T = unknown,>(url: string, config?: AxiosRequestConfig): Promise<AxiosResponse<T>> =>
+    this.axiosInstance.get(url, config);
+
+  post = <T = unknown,>(url: string, data?: unknown, config?: AxiosRequestConfig): Promise<AxiosResponse<T>> =>
+    this.axiosInstance.post(url, data, config);
+
+  put = <T = unknown,>(url: string, data?: unknown, config?: AxiosRequestConfig): Promise<AxiosResponse<T>> =>
+    this.axiosInstance.put(url, data, config);
+
+  patch = <T = unknown,>(url: string, data?: unknown, config?: AxiosRequestConfig): Promise<AxiosResponse<T>> =>
+    this.axiosInstance.patch(url, data, config);
+
+  delete = <T = unknown,>(url: string, config?: AxiosRequestConfig): Promise<AxiosResponse<T>> =>
+    this.axiosInstance.delete(url, config);
 }
 
 const ApiClient = new AxiosClient();
