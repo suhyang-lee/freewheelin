@@ -26,6 +26,8 @@ module.exports = {
 
         // Sub Colors
         "sub-54C0B1-green100": "#54C0B1",
+        "sub-FFC64D-yellow100": "#FFC64D",
+        "sub-FD5354-red100": "#FD5354",
       },
     },
   },
