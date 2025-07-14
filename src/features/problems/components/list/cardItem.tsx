@@ -4,19 +4,19 @@ import { ReactComponent as SwapIcon } from "../../../../assets/icons/icon_swap_h
 import { Problem } from "../../../../types/problem";
 
 interface CardItemProps {
-  item?: Problem;
+  item: Problem;
   children?: React.ReactNode;
 }
 
-function CardItem({ children }: CardItemProps) {
+function CardItem({ item, children }: CardItemProps) {
   return (
-    <li className="flex flex-col bg-white rounded-xl overflow-hidden ">
+    <li className="flex flex-col bg-white rounded-xl overflow-hidden shadow-[0_2px_6px_rgba(0,0,0,0.08)]">
       <div className="flex items-center justify-between bg-[#FAFAFA] p-2">
-        <ul className="flex items-center">
-          <li className="font-bold text-[18px] px-6">1</li>
-          <li className="tex t-sm">직선, 반직선 선분의 개수 (1)</li>
+        <ul className="flex items-center flex-1 min-w-0 mr-4">
+          <li className="font-bold text-[18px] px-6">{item.id}</li>
+          <li className="text-sm truncate">{item.title}</li>
         </ul>
-        <ul className="flex gap-3">
+        <ul className="flex gap-3 flex-shrink-0">
           <li>
             <button className="w-[43px] flex items-center gap-1 text-xs">
               <SwapIcon className="w-4 h-4" /> 교체
