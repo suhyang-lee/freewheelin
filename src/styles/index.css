@@ -44,6 +44,15 @@ code {
     flex-direction: column;
 }
 
+.scrollbar-transparent {
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE */
+}
+
+.scrollbar-transparent::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera */
+}
+
 @layer components {
     .H4-20-bold {
         @apply text-xl font-bold;
