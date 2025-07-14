@@ -16,9 +16,11 @@ function ProblemPage() {
 
   const methods = useForm<{
     problems: Problem[];
+    similarProblem: Problem[];
   }>({
     defaultValues: {
       problems: [],
+      similarProblem: [],
     },
   });
 
@@ -27,6 +29,7 @@ function ProblemPage() {
 
     methods.reset({
       problems: data,
+      similarProblem: [],
     });
   }, [isSuccess]);
 

@@ -1,26 +1,60 @@
-import React, { useEffect, useState } from "react";
-import type { Problem } from "../../../../types/problem";
+import React, { useEffect } from "react";
 import CardItem from "../list/cardItem";
 
 import { ReactComponent as AddDeactiveCircleIcon } from "../../../../assets/icons/icon-add-circle-deactive.svg";
 import { ReactComponent as SwapIcon } from "../../../../assets/icons/icon_swap_horiz.svg";
 import { useSearchParams } from "react-router";
-import similarProblemQuery from "../../queries/similarProblem.query";
 import SimilarProblemDefault from "./default";
+import { useFieldArray, useFormContext } from "react-hook-form";
+import { Problem } from "../../../../types/problem";
+import similarProblemQuery from "../../queries/similarProblem.query";
 
 function SimilarProblemSection() {
   const [searchParams] = useSearchParams();
   const problemNum = searchParams.get("problemNum") || "-1";
 
   const { isSuccess, data } = similarProblemQuery.getSimilarProblemList(parseInt(problemNum) ?? -1);
+  const { control, getValues, setValue } = useFormContext<{
+    problems: Problem[];
+    similarProblem: Problem[];
+  }>();
 
-  const [problemList, setProblemList] = useState<Problem[]>([]);
+  const { fields, replace, remove } = useFieldArray({
+    control,
+    name: "similarProblem",
+    keyName: "similarProblemId",
+  });
 
   useEffect(() => {
     if (!isSuccess) return;
 
-    setProblemList(data);
+    replace(data);
   }, [isSuccess]);
+
+  const onSwap = (currentItem: Problem, index: number) => {
+    const currentProblems: Problem[] = getValues("problems");
+    const currentItemIndex = currentProblems.findIndex(problem => `${problem.id}` === problemNum);
+
+    const originalProblem = currentProblems[currentItemIndex];
+
+    const newProblems = [...currentProblems];
+    newProblems[currentItemIndex] = currentItem;
+
+    setValue("problems", newProblems);
+
+    const newSimilarProblems = getValues("similarProblem");
+    newSimilarProblems[index] = originalProblem;
+    replace(newSimilarProblems);
+  };
+
+  const onAdd = (currentItem: Problem, index: number) => {
+    remove(index);
+
+    const currentProblems: Problem[] = getValues("problems");
+
+    const newProblems = [currentItem, ...currentProblems];
+    setValue("problems", newProblems);
+  };
 
   if (problemNum === "-1") {
     return <SimilarProblemDefault />;
@@ -31,16 +65,22 @@ function SimilarProblemSection() {
       <h2 className="body1-16-bold text-mono-333333-gray900 mb-4">유사 문항</h2>
       <div className="h-full pb-12 overflow-y-auto scrollbar-transparent">
         <ul className="flex flex-col gap-4">
-          {problemList.map(problem => (
-            <CardItem key={`${problem.id}`} cardType="similarProblem" item={problem}>
+          {fields.map((problem, index) => (
+            <CardItem key={`${problem.similarProblemId}`} cardType="similarProblem" item={problem}>
               <>
                 <li>
-                  <button className="w-[43px] flex items-center gap-1 text-xs text-mono-959595-gray600">
+                  <button
+                    onClick={() => onSwap(problem, index)}
+                    className="w-[43px] flex items-center gap-1 text-xs text-mono-959595-gray600"
+                  >
                     <SwapIcon className="w-4 h-4" /> 교체
                   </button>
                 </li>
                 <li>
-                  <button className="w-[43px] flex items-center gap-1 text-xs text-mono-959595-gray600">
+                  <button
+                    onClick={() => onAdd(problem, index)}
+                    className="w-[43px] flex items-center gap-1 text-xs text-mono-959595-gray600"
+                  >
                     <AddDeactiveCircleIcon /> 추가
                   </button>
                 </li>
