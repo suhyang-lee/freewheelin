@@ -1,20 +1,28 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import type { Problem } from "../../../../types/problem";
-import { getProblemList } from "../../api/problem.api";
+import { getSimilarProblemList } from "../../api/problem.api";
 import CardItem from "../list/cardItem";
 
 import { ReactComponent as AddDeactiveCircleIcon } from "../../../../assets/icons/icon-add-circle-deactive.svg";
 import { ReactComponent as SwapIcon } from "../../../../assets/icons/icon_swap_horiz.svg";
+import { useSearchParams } from "react-router";
 
 function SimilarProblemSection() {
-  const [problemList, setProblemList] = React.useState<Problem[]>([]);
+  const [searchParams] = useSearchParams();
+  const problemNum = searchParams.get("problemNum");
+
+  const [problemList, setProblemList] = useState<Problem[]>([]);
+
   useEffect(() => {
+    if (!problemNum) return;
+
+    const num = parseInt(problemNum);
     (async function () {
-      const response = await getProblemList();
-      console.log(`[데이터 호출 테스트] ${response}`);
+      const response = await getSimilarProblemList(num);
+      console.log(`[데이터 호출 테스트] ${JSON.stringify(response)}`);
       setProblemList(response.data);
     })();
-  }, []);
+  }, [problemNum]);
 
   return (
     <div className="w-full lg:w-1/2 xl:flex-[63] bg-problem-left p-4 rounded-xl overflow-hidden">
