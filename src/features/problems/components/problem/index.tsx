@@ -2,13 +2,19 @@ import React, { useMemo } from "react";
 import CardItem from "../list/cardItem";
 
 import { ReactComponent as AddDeActiveCircleIcon } from "../../../../assets/icons/icon-add-circle-deactive.svg";
+import { ReactComponent as AddActiveCircleIcon } from "../../../../assets/icons/icon-add-circle-active.svg";
 import { ReactComponent as DeleteIcon } from "../../../../assets/icons/icon_delete.svg";
 import { useFieldArray, useFormContext } from "react-hook-form";
 import { Problem } from "../../../../types/problem";
 import { useSearchParams } from "react-router";
+import { useQueryClient } from "@tanstack/react-query";
+import similarProblemQuery from "../../queries/similarProblem.query";
 
 const ProblemSection = () => {
-  const [, setSearchParams] = useSearchParams();
+  const queryClient = useQueryClient();
+
+  const [searchParams, setSearchParams] = useSearchParams();
+  const problemNum = searchParams.get("problemNum");
 
   const { control } = useFormContext<{
     problems: Problem[];
@@ -43,7 +49,17 @@ const ProblemSection = () => {
     });
   };
 
-  const onDeleteProblem = (index: number) => {
+  const onDeleteProblem = async (index: number, id: number) => {
+    if (problemNum === `${id}`) {
+      await queryClient.resetQueries({
+        queryKey: [similarProblemQuery.key, id],
+      });
+
+      setSearchParams(prev => {
+        prev.delete("problemNum");
+        return prev;
+      });
+    }
     remove(index);
   };
 
@@ -58,14 +74,19 @@ const ProblemSection = () => {
                 <li>
                   <button
                     onClick={() => onFindSimilarProblem(problem.id)}
-                    className="w-[65px] flex items-center gap-1 text-xs text-mono-959595-gray600"
+                    className={`w-[65px] flex items-center gap-1 text-xs ${problemNum === `${problem.id}` ? "text-core-00ABFF-blue300" : "text-mono-959595-gray600"}`}
                   >
-                    <AddDeActiveCircleIcon className="w-4 h-4" /> 유사문제
+                    {problemNum === `${problem.id}` ? (
+                      <AddActiveCircleIcon className="w-4 h-4" />
+                    ) : (
+                      <AddDeActiveCircleIcon className="w-4 h-4" />
+                    )}
+                    유사문제
                   </button>
                 </li>
                 <li>
                   <button
-                    onClick={() => onDeleteProblem(index)}
+                    onClick={() => onDeleteProblem(index, problem.id)}
                     className="w-[43px] flex items-center gap-1 text-xs text-mono-959595-gray600"
                   >
                     <DeleteIcon /> 삭제

@@ -6,8 +6,12 @@ import problemQuery from "../features/problems/queries/problem.query";
 import { ErrorBoundary } from "react-error-boundary";
 import SimilarProblemSection from "../features/problems/components/similarProblem";
 import SimilarProblemErrorsSection from "../features/problems/components/similarProblem/errors";
+import { useSearchParams } from "react-router";
 
 function ProblemPage() {
+  const [searchParams] = useSearchParams();
+  const problemNum = searchParams.get("problemNum") || "-1";
+
   const { isSuccess, isError, data } = problemQuery.getProblemList();
 
   const methods = useForm<{
@@ -37,7 +41,7 @@ function ProblemPage() {
   return (
     <FormProvider {...methods}>
       <div className="fixed inset-0 flex gap-4 p-[14px]">
-        <ErrorBoundary fallback={<SimilarProblemErrorsSection />}>
+        <ErrorBoundary fallback={<SimilarProblemErrorsSection />} resetKeys={[problemNum]}>
           <SimilarProblemSection />
         </ErrorBoundary>
         <ProblemSection />
