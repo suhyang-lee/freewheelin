@@ -69,7 +69,12 @@ const ProblemSection = () => {
       <div className="h-full overflow-y-auto scrollbar-transparent">
         <ul className="flex flex-col gap-4">
           {fields.map((problem, index) => (
-            <CardItem key={`${problem.itemId}-${index}`} cardType="problem" item={problem}>
+            <CardItem
+              key={`${problem.itemId}-${index}`}
+              cardType="problem"
+              item={problem}
+              active={problemNum === `${problem.id}`}
+            >
               <>
                 <li>
                   <button

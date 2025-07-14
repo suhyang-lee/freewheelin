@@ -6,6 +6,11 @@ export const PROBLEM_LEVELS = {
   5: "최상",
 } as const;
 
+export const PROBLEM_TYPE = {
+  1: "객관식",
+  2: "주관식",
+};
+
 export const PROBLEM_LEVELS_COLORS: Record<keyof typeof PROBLEM_LEVELS, string> = {
   1: "text-mono-5C5C5C-gray800",
   2: "text-core-00ABFF-blue300",

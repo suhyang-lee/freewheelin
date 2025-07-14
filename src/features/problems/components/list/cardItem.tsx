@@ -2,16 +2,21 @@ import React from "react";
 
 import { Problem } from "../../../../types/problem";
 import { getLevelColor, getLevelText } from "../../../../utils/problem.util";
+import { PROBLEM_TYPE } from "../../../../utils/constants";
 
 interface CardItemProps {
   item: Problem;
+  active?: boolean;
   cardType: "problem" | "similarProblem";
   children?: React.ReactNode;
 }
 
-function CardItem({ item, cardType, children }: CardItemProps) {
+function CardItem({ item, cardType, active = false, children }: CardItemProps) {
   return (
-    <li className="flex flex-col bg-white rounded-xl overflow-hidden shadow-[0_2px_6px_rgba(0,0,0,0.08)]">
+    <li
+      data-active={active ? "true" : "false"}
+      className="flex flex-col bg-white rounded-xl overflow-hidden shadow-[0_2px_6px_rgba(0,0,0,0.08)] border-solid border-[3px] border-transparent data-[active=true]:border-core-00ABFF-blue300"
+    >
       <div className="flex items-center justify-between bg-[#FAFAFA] p-2">
         <ul className="flex items-center flex-1 min-w-0 mr-4">
           <li className={`px-6 ${cardType === "problem" ? "H4-20-bold" : "H5-18-bold"}`}>{item.id}</li>
@@ -30,7 +35,7 @@ function CardItem({ item, cardType, children }: CardItemProps) {
             {item.answerRate.toFixed(0)}%
           </li>
           <li className="w-10 h-5 rounded text-xs flex items-center justify-center bg-mono-FAFAFA-gray100 text-mono-959595-gray600">
-            주관식
+            {PROBLEM_TYPE[item.type]}
           </li>
         </ul>
         <div className="w-full">
