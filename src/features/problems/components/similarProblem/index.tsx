@@ -42,8 +42,10 @@ function SimilarProblemSection() {
 
     setValue("problems", newProblems);
 
+    // 유사 문제와 문제 리스트 아이템 업데이트
     const newSimilarProblems = getValues("similarProblem");
     newSimilarProblems[index] = originalProblem;
+
     replace(newSimilarProblems);
   };
 
