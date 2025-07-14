@@ -15,7 +15,7 @@ function CardItem({ item, cardType, active = false, children }: CardItemProps) {
   return (
     <li
       data-active={active ? "true" : "false"}
-      className="flex flex-col bg-white rounded-xl overflow-hidden shadow-[0_2px_6px_rgba(0,0,0,0.08)] border-solid border-[3px] border-transparent data-[active=true]:border-core-00ABFF-blue300"
+      className="w-full  flex-shrink-0 flex flex-col bg-white rounded-xl overflow-hidden shadow-[0_2px_6px_rgba(0,0,0,0.08)] border-solid border-[3px] border-transparent data-[active=true]:border-core-00ABFF-blue300"
     >
       <div className="flex items-center justify-between bg-[#FAFAFA] p-2">
         <ul className="flex items-center flex-1 min-w-0 mr-4">

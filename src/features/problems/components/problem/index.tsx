@@ -9,6 +9,7 @@ import { Problem } from "../../../../types/problem";
 import { useSearchParams } from "react-router";
 import { useQueryClient } from "@tanstack/react-query";
 import similarProblemQuery from "../../queries/similarProblem.query";
+import ProblemDefaultItem from "../list/problemDefaultItem";
 
 const ProblemSection = () => {
   const queryClient = useQueryClient();
@@ -67,7 +68,7 @@ const ProblemSection = () => {
     <div className="flex flex-col w-full lg:w-1/2 xl:flex-[89] bg-problem-right px-4 pt-4 rounded-xl overflow-hidden">
       <h2 className="body1-16-bold text-white mb-4">학습지 상세 편집</h2>
       <div className="h-full overflow-y-auto scrollbar-transparent">
-        <ul className="flex flex-col gap-4">
+        <ul className="w-full h-full flex flex-col gap-4">
           {fields.map((problem, index) => (
             <CardItem
               key={`${problem.itemId}-${index}`}
@@ -100,14 +101,19 @@ const ProblemSection = () => {
               </>
             </CardItem>
           ))}
+          {fields.length === 0 && <ProblemDefaultItem />}
         </ul>
       </div>
       <div className="flex items-center justify-end h-16">
-        <span className="body1-16-regular text-mono-C0C0C0-gray500">
-          {`하${problemCounts["1"]} · 중하${problemCounts["2"]} · 중${problemCounts["3"]} · 상${problemCounts["4"]} · 최상${problemCounts["5"]}`}
+        <div className={`flex items-center ${fields.length === 0 && "hidden"}`}>
+          <span className="body1-16-regular text-mono-C0C0C0-gray500">
+            {`하${problemCounts["1"]} · 중하${problemCounts["2"]} · 중${problemCounts["3"]} · 상${problemCounts["4"]} · 최상${problemCounts["5"]}`}
+          </span>
+          <span className="w-[1px] h-4 mx-2 bg-white" />
+        </div>
+        <span className={`body1-16-bold  ${fields.length === 0 ? "text-sub-FD5354-red100" : "text-white"}`}>
+          문제 수 {fields.length || 0}개
         </span>
-        <span className="w-[1px] h-4 mx-2 bg-white" />
-        <span className="body1-16-bold text-white">문제 수 {fields.length || 0}개</span>
       </div>
     </div>
   );

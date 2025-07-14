@@ -12,7 +12,7 @@ function ProblemPage() {
   const [searchParams] = useSearchParams();
   const problemNum = searchParams.get("problemNum") || "-1";
 
-  const { isSuccess, isError, data } = problemQuery.getProblemList();
+  const { isSuccess, data } = problemQuery.getProblemList();
 
   const methods = useForm<{
     problems: Problem[];
@@ -29,14 +29,6 @@ function ProblemPage() {
       problems: data,
     });
   }, [isSuccess]);
-
-  if (isError) {
-    return <div>errors</div>;
-  }
-
-  if (data?.length === 0) {
-    return <div>데이터가 없습니다.</div>;
-  }
 
   return (
     <FormProvider {...methods}>
