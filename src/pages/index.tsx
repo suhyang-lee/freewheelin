@@ -1,3 +1,4 @@
+import React from "react";
 import { createBrowserRouter } from "react-router";
 import ProblemPage from "./problem";
 import NotFoundPage from "./notFound";
