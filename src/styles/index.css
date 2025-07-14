@@ -43,3 +43,29 @@ code {
     display: flex;
     flex-direction: column;
 }
+
+@layer components {
+    .H4-20-bold {
+        @apply text-xl font-bold;
+    }
+
+    .H5-18-bold {
+        @apply text-lg font-bold;
+    }
+
+    .body1-16-bold {
+        @apply text-base font-bold;
+    }
+
+    .body1-16-regular {
+        @apply text-base;
+    }
+
+    .body2-14-regular {
+        @apply text-sm;
+    }
+
+    .caption1-12-regular {
+        @apply text-xs;
+    }
+}
