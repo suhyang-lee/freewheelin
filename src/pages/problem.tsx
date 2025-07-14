@@ -1,16 +1,22 @@
-import React from "react";
+import React, { useEffect } from "react";
+import { getProblemList } from "../features/problems/api/problem.api";
+import SimilarProblem from "../features/problems/components/similarProblem";
+import Problem from "../features/problems/components/problem";
 
-function Problem() {
+function ProblemPage() {
+  useEffect(() => {
+    (async function () {
+      const data = await getProblemList();
+      console.log(`[데이터 호출 테스트] ${data}`);
+    })();
+  }, []);
+
   return (
     <div className="fixed inset-0 flex gap-4 p-[14px]">
-      <div className="w-full lg:w-1/2 xl:flex-[63] bg-problem-left rounded-xl overflow-auto">
-        {/* 여기 내용이 많으면 스크롤 생김 */}
-      </div>
-      <div className="w-full lg:w-1/2 xl:flex-[89] bg-problem-right rounded-xl overflow-auto">
-        {/* 여기도 마찬가지 */}
-      </div>
+      <Problem />
+      <SimilarProblem />
     </div>
   );
 }
 
-export default Problem;
+export default ProblemPage;
