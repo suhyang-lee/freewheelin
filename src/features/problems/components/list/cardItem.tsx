@@ -2,6 +2,7 @@ import React from "react";
 import { ReactComponent as AddDeactiveCircleIcon } from "../../../../assets/icons/icon-add-circle-deactive.svg";
 import { ReactComponent as SwapIcon } from "../../../../assets/icons/icon_swap_horiz.svg";
 import { Problem } from "../../../../types/problem";
+import { getLevelColor, getLevelText } from "../../../../utils/problem.util";
 
 interface CardItemProps {
   item: Problem;
@@ -32,9 +33,13 @@ function CardItem({ item, children }: CardItemProps) {
       </div>
       <div className="flex p-4">
         <ul className="flex flex-col gap-2">
-          <li className="w-10 h-5 rounded text-xs flex items-center justify-center bg-red-300">중</li>
-          <li className="w-10 h-5 rounded text-xs flex items-center justify-center bg-red-300">72%</li>
-          <li className="w-10 h-5 rounded text-xs flex items-center justify-center bg-red-300">주관식</li>
+          <li
+            className={`w-10 h-5 rounded text-xs flex items-center justify-center bg-[#FAFAFA] ${getLevelColor(item.level)}`}
+          >
+            {getLevelText(item.level)}
+          </li>
+          <li className="w-10 h-5 rounded text-xs flex items-center justify-center bg-[#FAFAFA]">72%</li>
+          <li className="w-10 h-5 rounded text-xs flex items-center justify-center bg-[#FAFAFA]">주관식</li>
         </ul>
         <div>
           <img src="" alt="" />
