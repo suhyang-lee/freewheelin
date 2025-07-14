@@ -1,28 +1,30 @@
 import React, { useEffect, useState } from "react";
 import type { Problem } from "../../../../types/problem";
-import { getSimilarProblemList } from "../../api/problem.api";
 import CardItem from "../list/cardItem";
 
 import { ReactComponent as AddDeactiveCircleIcon } from "../../../../assets/icons/icon-add-circle-deactive.svg";
 import { ReactComponent as SwapIcon } from "../../../../assets/icons/icon_swap_horiz.svg";
 import { useSearchParams } from "react-router";
+import similarProblemQuery from "../../queries/similarProblem.query";
+import SimilarProblemDefault from "./default";
 
 function SimilarProblemSection() {
   const [searchParams] = useSearchParams();
-  const problemNum = searchParams.get("problemNum");
+  const problemNum = searchParams.get("problemNum") || "-1";
+
+  const { isSuccess, data } = similarProblemQuery.getSimilarProblemList(parseInt(problemNum) ?? -1);
 
   const [problemList, setProblemList] = useState<Problem[]>([]);
 
   useEffect(() => {
-    if (!problemNum) return;
+    if (!isSuccess) return;
 
-    const num = parseInt(problemNum);
-    (async function () {
-      const response = await getSimilarProblemList(num);
-      console.log(`[데이터 호출 테스트] ${JSON.stringify(response)}`);
-      setProblemList(response.data);
-    })();
-  }, [problemNum]);
+    setProblemList(data);
+  }, [isSuccess]);
+
+  if (problemNum === "-1") {
+    return <SimilarProblemDefault />;
+  }
 
   return (
     <div className="w-full lg:w-1/2 xl:flex-[63] bg-problem-left p-4 rounded-xl overflow-hidden">
