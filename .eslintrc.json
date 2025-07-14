@@ -1,13 +1,16 @@
 {
   "parser": "@typescript-eslint/parser",
-  "plugins": ["@typescript-eslint"],
+  "plugins": [
+    "@typescript-eslint",
+    "react"
+  ],
   "extends": [
     "plugin:react/recommended",
-    "prettier/@typescript-eslint",
+    "plugin:@typescript-eslint/recommended",
     "plugin:prettier/recommended"
   ],
   "parserOptions": {
-    "ecmaVersion": 6,
+    "ecmaVersion": "latest",
     "sourceType": "module",
     "ecmaFeatures": {
       "jsx": true
@@ -17,8 +20,18 @@
     "semi": 2,
     "@typescript-eslint/explicit-function-return-type": [
       "warn",
-      { "allowTypedFunctionExpressions": true }
-    ]
+      {
+        "allowTypedFunctionExpressions": true
+      }
+    ],
+    "@typescript-eslint/no-unused-expressions": [
+      "error",
+      {
+        "allowShortCircuit": true,
+        "allowTernary": true
+      }
+    ],
+    "no-unused-expressions": "off"
   },
   "settings": {
     "react": {
