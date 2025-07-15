@@ -33,6 +33,8 @@ function SimilarProblemSection() {
   useEffect(() => {
     if (action === "swap") return;
 
+    if (problemNum === "-1" || !problemNum) return;
+
     (async function () {
       const res = await getSimilarProblemList(parseInt(problemNum), excludeIds);
       replace(res.data);

@@ -7,13 +7,9 @@ import { ReactComponent as DeleteIcon } from "../../../../assets/icons/icon_dele
 import { useFieldArray, useFormContext } from "react-hook-form";
 import { Problem } from "../../../../types/problem";
 import { useSearchParams } from "react-router";
-import { useQueryClient } from "@tanstack/react-query";
-import similarProblemQuery from "../../queries/similarProblem.query";
 import ProblemDefaultItem from "../list/problemDefaultItem";
 
 const ProblemSection = () => {
-  const queryClient = useQueryClient();
-
   const [searchParams, setSearchParams] = useSearchParams();
   const problemNum = searchParams.get("problemNum");
 
@@ -52,10 +48,6 @@ const ProblemSection = () => {
 
   const onDeleteProblem = async (index: number, id: number) => {
     if (problemNum === `${id}`) {
-      await queryClient.resetQueries({
-        queryKey: [similarProblemQuery.key, id],
-      });
-
       setSearchParams(prev => {
         prev.delete("problemNum");
         return prev;
