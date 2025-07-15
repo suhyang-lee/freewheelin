@@ -112,14 +112,16 @@ const ProblemSection = () => {
         </ul>
       </div>
       <div className="flex items-center justify-end h-16">
-        <div className={`flex items-center ${isEmptyProblem && "hidden"}`}>
-          <span className="body1-16-regular text-mono-C0C0C0-gray500">
-            {`하${problemCounts["1"]} · 중하${problemCounts["2"]} · 중${problemCounts["3"]} · 상${problemCounts["4"]} · 최상${problemCounts["5"]}`}
-          </span>
-          <span className="w-[1px] h-4 mx-2 bg-white" />
-        </div>
+        {!isEmptyProblem && (
+          <div className="flex items-center">
+            <span className="body1-16-regular text-mono-C0C0C0-gray500">
+              {`하${problemCounts["1"]} · 중하${problemCounts["2"]} · 중${problemCounts["3"]} · 상${problemCounts["4"]} · 최상${problemCounts["5"]}`}
+            </span>
+            <span className="w-[1px] h-4 mx-2 bg-white" />
+          </div>
+        )}
         <span className={`body1-16-bold  ${isEmptyProblem ? "text-sub-FD5354-red100" : "text-white"}`}>
-          문제 수 {fields.length || 0}개
+          문제 수 {fields.length}개
         </span>
       </div>
     </div>
