@@ -14,21 +14,8 @@ class AxiosClient {
     return this.axiosInstance;
   }
 
-  // 편의 메서드들
   get = <T = unknown,>(url: string, config?: AxiosRequestConfig): Promise<AxiosResponse<T>> =>
     this.axiosInstance.get(url, config);
-
-  post = <T = unknown,>(url: string, data?: unknown, config?: AxiosRequestConfig): Promise<AxiosResponse<T>> =>
-    this.axiosInstance.post(url, data, config);
-
-  put = <T = unknown,>(url: string, data?: unknown, config?: AxiosRequestConfig): Promise<AxiosResponse<T>> =>
-    this.axiosInstance.put(url, data, config);
-
-  patch = <T = unknown,>(url: string, data?: unknown, config?: AxiosRequestConfig): Promise<AxiosResponse<T>> =>
-    this.axiosInstance.patch(url, data, config);
-
-  delete = <T = unknown,>(url: string, config?: AxiosRequestConfig): Promise<AxiosResponse<T>> =>
-    this.axiosInstance.delete(url, config);
 }
 
 const ApiClient = new AxiosClient();
