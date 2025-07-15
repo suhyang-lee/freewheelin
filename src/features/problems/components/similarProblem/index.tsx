@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect } from "react";
 import CardItem from "../list/cardItem";
 
 import { ReactComponent as AddDeactiveCircleIcon } from "../../../../assets/icons/icon-add-circle-deactive.svg";
@@ -7,13 +7,13 @@ import { useSearchParams } from "react-router";
 import SimilarProblemDefault from "./default";
 import { useFieldArray, useFormContext } from "react-hook-form";
 import { Problem } from "../../../../types/problem";
-import similarProblemQuery from "../../queries/similarProblem.query";
+
+import { getSimilarProblemList } from "../../api/problem.api";
 
 function SimilarProblemSection() {
-  const isInitialMount = useRef(false);
-
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const problemNum = searchParams.get("problemNum") || "-1";
+  const action = searchParams.get("action") || "";
 
   const { control, getValues, setValue } = useFormContext<{
     problems: Problem[];
@@ -24,8 +24,6 @@ function SimilarProblemSection() {
     .filter(problem => problem.id !== parseInt(problemNum))
     .map(problem => problem.id);
 
-  const { isSuccess, data } = similarProblemQuery.getSimilarProblemList(parseInt(problemNum) ?? -1, excludeIds);
-
   const { fields, replace, update, remove } = useFieldArray({
     control,
     name: "similarProblem",
@@ -33,17 +31,22 @@ function SimilarProblemSection() {
   });
 
   useEffect(() => {
-    if (isInitialMount.current) return;
-    if (!isSuccess) return;
+    if (action === "swap") return;
 
-    replace(data);
-
-    isInitialMount.current = true;
-  }, [isSuccess]);
+    (async function () {
+      const res = await getSimilarProblemList(parseInt(problemNum), excludeIds);
+      replace(res.data);
+    })();
+  }, [problemNum]);
 
   useEffect(() => {
-    isInitialMount.current = false;
-  }, [problemNum]);
+    if (action === "swap") {
+      setSearchParams(prev => {
+        prev.delete("action");
+        return prev;
+      });
+    }
+  }, [action]);
 
   const onSwap = (currentItem: Problem, index: number) => {
     const currentProblems: Problem[] = getValues("problems");
@@ -52,11 +55,17 @@ function SimilarProblemSection() {
     const originalProblem = currentProblems[currentItemIndex];
 
     const newProblems = [...currentProblems];
-    newProblems[currentItemIndex] = { ...currentItem, id: originalProblem.id };
+    newProblems[currentItemIndex] = { ...currentItem };
 
     setValue("problems", newProblems);
 
     update(index, originalProblem);
+
+    setSearchParams(prev => {
+      prev.set("problemNum", `${currentItem.id}`);
+      prev.set("action", "swap");
+      return prev;
+    });
   };
 
   const onAdd = (currentItem: Problem, index: number) => {
