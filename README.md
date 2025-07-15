@@ -41,6 +41,7 @@ https://assignment.mathflat.com/
    ```
     형태는 /problems 와 동일
    ```
+    - (필수) queryParams : excludedProblemIds
 
 3. 에러 형태
    ```json
