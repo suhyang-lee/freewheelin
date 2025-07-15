@@ -7,4 +7,9 @@ interface Problem {
   problemImageUrl: string;
 }
 
-export type { Problem };
+interface ProblemForm {
+  problems: Problem[];
+  similarProblem: Problem[];
+}
+
+export type { Problem, ProblemForm };

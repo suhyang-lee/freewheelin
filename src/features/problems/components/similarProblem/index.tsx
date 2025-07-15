@@ -6,7 +6,7 @@ import { ReactComponent as SwapIcon } from "../../../../assets/icons/icon_swap_h
 import { useSearchParams } from "react-router";
 import SimilarProblemDefault from "./default";
 import { useFieldArray, useFormContext } from "react-hook-form";
-import { Problem } from "../../../../types/problem";
+import { Problem, ProblemForm } from "../../../../types/problem";
 
 import { getSimilarProblemList } from "../../api/problem.api";
 
@@ -15,10 +15,7 @@ function SimilarProblemSection() {
   const problemNum = searchParams.get("problemNum") || "-1";
   const action = searchParams.get("action") || "";
 
-  const { control, getValues, setValue } = useFormContext<{
-    problems: Problem[];
-    similarProblem: Problem[];
-  }>();
+  const { control, getValues, setValue } = useFormContext<ProblemForm>();
 
   const excludeIds = getValues("problems")
     .filter(problem => problem.id !== parseInt(problemNum))

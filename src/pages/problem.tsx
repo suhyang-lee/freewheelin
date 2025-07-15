@@ -1,7 +1,7 @@
 import React from "react";
 import ProblemSection from "../features/problems/components/problem";
 import { FormProvider, useForm } from "react-hook-form";
-import { Problem } from "../types/problem";
+import { ProblemForm } from "../types/problem";
 import { ErrorBoundary } from "react-error-boundary";
 import SimilarProblemSection from "../features/problems/components/similarProblem";
 import SimilarProblemErrorsSection from "../features/problems/components/similarProblem/errors";
@@ -12,10 +12,7 @@ function ProblemPage() {
   const [searchParams] = useSearchParams();
   const problemNum = searchParams.get("problemNum") || "-1";
 
-  const methods = useForm<{
-    problems: Problem[];
-    similarProblem: Problem[];
-  }>({
+  const methods = useForm<ProblemForm>({
     defaultValues: {
       problems: [],
       similarProblem: [],
