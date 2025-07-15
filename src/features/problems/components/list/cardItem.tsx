@@ -3,6 +3,7 @@ import React from "react";
 import { Problem } from "../../../../types/problem";
 import { getLevelColor, getLevelText } from "../../../../utils/problem.util";
 import { PROBLEM_TYPE } from "../../../../utils/constants";
+import ProblemImage from "./problemImage";
 
 interface CardItemProps {
   item: Problem;
@@ -38,13 +39,7 @@ function CardItem({ item, cardType, active = false, children }: CardItemProps) {
             {PROBLEM_TYPE[item.type]}
           </li>
         </ul>
-        <div className="w-full">
-          <img
-            className="w-full lg:min-w-[271px] lg:max-w-[304px] xl:min-w-[341px] xl:max-w-[397px]"
-            src={item.problemImageUrl}
-            alt={item.title}
-          />
-        </div>
+        <ProblemImage src={item.problemImageUrl} alt={item.title} />
       </div>
     </li>
   );
