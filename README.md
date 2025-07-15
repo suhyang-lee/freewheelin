@@ -74,3 +74,7 @@ https://assignment.mathflat.com/
 ## 추가 검토 사항
 
 1. 이미지의 사이즈의 최대폭/최소폭
+2. swap 시 처리
+    - `queryParams` 를 통해 `active` 상태를 유지하므로 swap 시, `queryParams`에 노출되는 ID 변경
+    - 불필요한 API 호출 방지를 위해서 swap 상태를 관리함으로써 swap 시에 API 가 호출되지 않도록 함
+    - swap 기능을 `유사문제` 리스트는 유지하고 `학습지 상세 편집` 리스트와 단순 교체를 의미하는 것을 바탕으로 구현함
