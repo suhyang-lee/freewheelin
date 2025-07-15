@@ -11,6 +11,7 @@ const problemQuery = {
         const res = await getProblemList();
         return res.data || [];
       },
+      throwOnError: true,
     });
   },
 };

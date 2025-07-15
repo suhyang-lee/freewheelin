@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo } from "react";
 import CardItem from "../list/cardItem";
 
 import { ReactComponent as AddDeActiveCircleIcon } from "../../../../assets/icons/icon-add-circle-deactive.svg";
@@ -8,13 +8,17 @@ import { useFieldArray, useFormContext } from "react-hook-form";
 import { Problem } from "../../../../types/problem";
 import { useSearchParams } from "react-router";
 import ProblemDefaultItem from "../list/problemDefaultItem";
+import problemQuery from "../../queries/problem.query";
 
 const ProblemSection = () => {
   const [searchParams, setSearchParams] = useSearchParams();
-  const problemNum = searchParams.get("problemNum");
+  const problemNum = searchParams.get("problemNum") || "-1";
 
-  const { control } = useFormContext<{
+  const { isSuccess, data } = problemQuery.getProblemList();
+
+  const { control, reset } = useFormContext<{
     problems: Problem[];
+    similarProblem: Problem[];
   }>();
 
   const { fields, remove } = useFieldArray({
@@ -22,6 +26,15 @@ const ProblemSection = () => {
     name: "problems",
     keyName: "itemId",
   });
+
+  useEffect(() => {
+    if (!isSuccess) return;
+
+    reset({
+      problems: data,
+      similarProblem: [],
+    });
+  }, [isSuccess]);
 
   const problemCounts = useMemo(() => {
     const counts = {
