@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import CardItem from "../list/cardItem";
 
 import { ReactComponent as AddDeactiveCircleIcon } from "../../../../assets/icons/icon-add-circle-deactive.svg";
@@ -10,26 +10,40 @@ import { Problem } from "../../../../types/problem";
 import similarProblemQuery from "../../queries/similarProblem.query";
 
 function SimilarProblemSection() {
+  const isInitialMount = useRef(false);
+
   const [searchParams] = useSearchParams();
   const problemNum = searchParams.get("problemNum") || "-1";
 
-  const { isSuccess, data } = similarProblemQuery.getSimilarProblemList(parseInt(problemNum) ?? -1);
   const { control, getValues, setValue } = useFormContext<{
     problems: Problem[];
     similarProblem: Problem[];
   }>();
 
-  const { fields, replace, remove } = useFieldArray({
+  const excludeIds = getValues("problems")
+    .filter(problem => problem.id !== parseInt(problemNum))
+    .map(problem => problem.id);
+
+  const { isSuccess, data } = similarProblemQuery.getSimilarProblemList(parseInt(problemNum) ?? -1, excludeIds);
+
+  const { fields, replace, update, remove } = useFieldArray({
     control,
     name: "similarProblem",
     keyName: "similarProblemId",
   });
 
   useEffect(() => {
+    if (isInitialMount.current) return;
     if (!isSuccess) return;
 
     replace(data);
+
+    isInitialMount.current = true;
   }, [isSuccess]);
+
+  useEffect(() => {
+    isInitialMount.current = false;
+  }, [problemNum]);
 
   const onSwap = (currentItem: Problem, index: number) => {
     const currentProblems: Problem[] = getValues("problems");
@@ -38,15 +52,11 @@ function SimilarProblemSection() {
     const originalProblem = currentProblems[currentItemIndex];
 
     const newProblems = [...currentProblems];
-    newProblems[currentItemIndex] = currentItem;
+    newProblems[currentItemIndex] = { ...currentItem, id: originalProblem.id };
 
     setValue("problems", newProblems);
 
-    // 유사 문제와 문제 리스트 아이템 업데이트
-    const newSimilarProblems = getValues("similarProblem");
-    newSimilarProblems[index] = originalProblem;
-
-    replace(newSimilarProblems);
+    update(index, originalProblem);
   };
 
   const onAdd = (currentItem: Problem, index: number) => {
@@ -66,30 +76,36 @@ function SimilarProblemSection() {
     <div className="w-full lg:w-1/2 xl:flex-[63] bg-problem-left p-4 rounded-xl overflow-hidden">
       <h2 className="body1-16-bold text-mono-333333-gray900 mb-4">유사 문항</h2>
       <div className="h-full pb-12 overflow-y-auto scrollbar-transparent">
-        <ul className="flex flex-col gap-4">
-          {fields.map((problem, index) => (
-            <CardItem key={`${problem.similarProblemId}`} cardType="similarProblem" item={problem}>
-              <>
-                <li>
-                  <button
-                    onClick={() => onSwap(problem, index)}
-                    className="w-[43px] flex items-center gap-1 text-xs text-mono-959595-gray600"
-                  >
-                    <SwapIcon className="w-4 h-4" /> 교체
-                  </button>
-                </li>
-                <li>
-                  <button
-                    onClick={() => onAdd(problem, index)}
-                    className="w-[43px] flex items-center gap-1 text-xs text-mono-959595-gray600"
-                  >
-                    <AddDeactiveCircleIcon /> 추가
-                  </button>
-                </li>
-              </>
-            </CardItem>
-          ))}
-        </ul>
+        {problemNum !== "-1" && fields.length === 0 ? (
+          <div className="w-full h-full flex items-center justify-center">
+            <SimilarProblemDefault />
+          </div>
+        ) : (
+          <ul className="flex flex-col gap-4 min-h-full">
+            {fields.map((problem, index) => (
+              <CardItem key={`${problem.similarProblemId}`} cardType="similarProblem" item={problem}>
+                <>
+                  <li>
+                    <button
+                      onClick={() => onSwap(problem, index)}
+                      className="w-[43px] flex items-center gap-1 text-xs text-mono-959595-gray600"
+                    >
+                      <SwapIcon className="w-4 h-4" /> 교체
+                    </button>
+                  </li>
+                  <li>
+                    <button
+                      onClick={() => onAdd(problem, index)}
+                      className="w-[43px] flex items-center gap-1 text-xs text-mono-959595-gray600"
+                    >
+                      <AddDeactiveCircleIcon /> 추가
+                    </button>
+                  </li>
+                </>
+              </CardItem>
+            ))}
+          </ul>
+        )}
       </div>
     </div>
   );
