@@ -1,5 +1,7 @@
 # 프리윌린 과제
 
+
+
 ## 과제 요구사항
 
 1. 디자인 요구사항
@@ -17,6 +19,8 @@
     - 가장 좋은 구조 & 개선 방안에 대해 생각하며 작업
 
 ---
+
+
 
 ## API 리스트
 
@@ -51,6 +55,8 @@ https://assignment.mathflat.com/
    }
    ```
 
+
+
 ## 과제 구현 사항
 
 ```
@@ -71,6 +77,26 @@ https://assignment.mathflat.com/
 
 ---
 
+
+
+## 기술 스택 & 구현 방식
+
+- React 
+- TypeScript
+- React Query
+  - 초기 문제 리스트 조회에만 사용
+  - swap 시 API 재호출 방지를 위해 유사문제는 수동 상태 관리로 구현
+- React Hook Form
+  - useFieldArray를 활용한 동적 문제 리스트 관리 
+  - 복잡한 전역 상태 관리 없이 CRUD 작업 간편화
+- React Router
+  -  URL 파라미터를 통한 active 문제 상태 관리 
+  - 새로고침 시에도 선택된 문제 상태 유지
+- Tailwind CSS
+  - 빠른 스타일링 및 간단한 디자인 시스템 구축에 용이하여 사용
+
+
+
 ## 추가 검토 사항
 
 1. 이미지의 사이즈의 최대폭/최소폭
@@ -83,4 +109,4 @@ https://assignment.mathflat.com/
 3. 이미지 레이지 로드
    - 크롬 최신 버전에서 제공하는 <img /> 태그의 lazy 옵션, 레이지로드 옵션, Intersection Observer 중 선택을 고민
    - <img /> 태그가 가장 간단하였으나 태블릿, 핸드폰, 브라우저 간의 호환성을 고려하면 적합하지 않을 것으로 제외
-   
+   - 비교적 간단한 형태의 lazy 로 가능할 것 같아 `Intersection Observer` 를 통해 스크롤 시 lazy 로드 되도록 처리
