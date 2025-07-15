@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useMemo } from "react";
 import CardItem from "../list/cardItem";
 
 import { ReactComponent as AddDeactiveCircleIcon } from "../../../../assets/icons/icon-add-circle-deactive.svg";
@@ -10,16 +10,23 @@ import { Problem, ProblemForm } from "../../../../types/problem";
 
 import { getSimilarProblemList } from "../../api/problem.api";
 
-function SimilarProblemSection() {
+const INITIAL_PROBLEM_NUM = "-1";
+const SWAP_ACTION = "swap";
+
+const SimilarProblemSection = () => {
   const [searchParams, setSearchParams] = useSearchParams();
-  const problemNum = searchParams.get("problemNum") || "-1";
-  const action = searchParams.get("action") || "";
+
+  const problemNum = searchParams.get("problemNum") ?? INITIAL_PROBLEM_NUM;
+  const action = searchParams.get("action") ?? "";
 
   const { control, getValues, setValue } = useFormContext<ProblemForm>();
 
-  const excludeIds = getValues("problems")
-    .filter(problem => problem.id !== parseInt(problemNum))
-    .map(problem => problem.id);
+  const excludeIds = useMemo(() => {
+    const problems = getValues("problems");
+    if (!problems) return [];
+
+    return problems.filter(problem => problem.id !== parseInt(problemNum)).map(problem => problem.id);
+  }, [problemNum]);
 
   const { fields, replace, update, remove } = useFieldArray({
     control,
@@ -28,18 +35,21 @@ function SimilarProblemSection() {
   });
 
   useEffect(() => {
-    if (action === "swap") return;
+    const fetchSimilarProblems = async () => {
+      if (action === SWAP_ACTION || problemNum === INITIAL_PROBLEM_NUM) return;
 
-    if (problemNum === "-1" || !problemNum) return;
+      const parsedProblemNum = parseInt(problemNum);
+      if (isNaN(parsedProblemNum)) return;
 
-    (async function () {
-      const res = await getSimilarProblemList(parseInt(problemNum), excludeIds);
+      const res = await getSimilarProblemList(parsedProblemNum, excludeIds);
       replace(res.data);
-    })();
-  }, [problemNum]);
+    };
+
+    fetchSimilarProblems();
+  }, [problemNum, excludeIds]);
 
   useEffect(() => {
-    if (action === "swap") {
+    if (action === SWAP_ACTION) {
       setSearchParams(prev => {
         prev.delete("action");
         return prev;
@@ -50,6 +60,8 @@ function SimilarProblemSection() {
   const onSwap = (currentItem: Problem, index: number) => {
     const currentProblems: Problem[] = getValues("problems");
     const currentItemIndex = currentProblems.findIndex(problem => `${problem.id}` === problemNum);
+
+    if (currentItemIndex === -1) return;
 
     const originalProblem = currentProblems[currentItemIndex];
 
@@ -62,7 +74,7 @@ function SimilarProblemSection() {
 
     setSearchParams(prev => {
       prev.set("problemNum", `${currentItem.id}`);
-      prev.set("action", "swap");
+      prev.set("action", SWAP_ACTION);
       return prev;
     });
   };
@@ -76,15 +88,17 @@ function SimilarProblemSection() {
     setValue("problems", newProblems);
   };
 
-  if (problemNum === "-1") {
+  if (problemNum === INITIAL_PROBLEM_NUM) {
     return <SimilarProblemDefault />;
   }
+
+  const isEmptyProblem = fields.length === 0;
 
   return (
     <div className="w-full lg:w-1/2 xl:flex-[63] bg-problem-left p-4 rounded-xl overflow-hidden">
       <h2 className="body1-16-bold text-mono-333333-gray900 mb-4">유사 문항</h2>
       <div className="h-full pb-12 overflow-y-auto scrollbar-transparent">
-        {problemNum !== "-1" && fields.length === 0 ? (
+        {isEmptyProblem ? (
           <div className="w-full h-full flex items-center justify-center">
             <SimilarProblemDefault />
           </div>
@@ -117,6 +131,6 @@ function SimilarProblemSection() {
       </div>
     </div>
   );
-}
+};
 
 export default SimilarProblemSection;
